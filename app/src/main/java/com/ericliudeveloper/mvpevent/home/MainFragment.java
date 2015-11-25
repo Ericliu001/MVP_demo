@@ -1,4 +1,4 @@
-package com.ericliudeveloper.mvpevent.ui;
+package com.ericliudeveloper.mvpevent.home;
 
 
 import android.app.Fragment;

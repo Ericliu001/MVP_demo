@@ -26,6 +26,10 @@ public class ProviderContract {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FIRSTMODEL).build();
 
+        public static Uri buildFirstModelUriById(String firstModelId) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(firstModelId)).build();
+        }
+
         public static String[] PROJECTION = {
                 FirstModelTable.COL_ID,
                 FirstModelTable.COL_DIRECTION,
