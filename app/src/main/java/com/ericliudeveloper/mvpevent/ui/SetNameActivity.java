@@ -24,6 +24,8 @@ public class SetNameActivity extends Activity {
     Button btSetName;
     EditText editText;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

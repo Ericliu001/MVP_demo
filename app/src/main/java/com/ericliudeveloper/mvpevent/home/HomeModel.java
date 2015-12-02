@@ -2,6 +2,7 @@ package com.ericliudeveloper.mvpevent.home;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,20 +12,26 @@ import android.support.annotation.Nullable;
 import com.ericliudeveloper.mvpevent.framework.Model;
 import com.ericliudeveloper.mvpevent.framework.QueryEnum;
 import com.ericliudeveloper.mvpevent.framework.UserActionEnum;
+import com.ericliudeveloper.mvpevent.model.DaoFactory;
 import com.ericliudeveloper.mvpevent.model.FirstModel;
+import com.ericliudeveloper.mvpevent.model.FirstModelDAO;
 import com.ericliudeveloper.mvpevent.provider.FirstModelTable;
 import com.ericliudeveloper.mvpevent.provider.ProviderContract;
+import com.ericliudeveloper.mvpevent.ui.DisplayInfoActivity;
+import com.ericliudeveloper.mvpevent.ui.SetNameActivity;
 
 /**
  * Created by ericliu on 25/11/2015.
  */
 public class HomeModel implements Model {
+    private static final String MAIN_PRESENTER_DATA = "main_presenter_data";
     private FirstModel mFirstModel;
     private android.content.Context mContext;
 
 
     public HomeModel(Context context) {
         this.mContext = context;
+        mFirstModel = new FirstModel();
     }
 
     /**
@@ -54,7 +61,6 @@ public class HomeModel implements Model {
 
         return isSuccess;
     }
-
 
 
     /**
@@ -93,21 +99,36 @@ public class HomeModel implements Model {
         boolean success = false;
         if (HomeScreenUserActionEnum.GO_LEFT == action) {
 
+            mFirstModel.setDirection(FirstModel.Direction.LEFT);
+            success = true;
+
         } else if (HomeScreenUserActionEnum.GO_RIGHT == action) {
 
-
+            mFirstModel.setDirection(FirstModel.Direction.RIGHT);
             success = true;
+
         } else if (HomeScreenUserActionEnum.INCREASE == action) {
 
-
+            mFirstModel.setProgress(mFirstModel.getProgress() + 5);
             success = true;
+
         } else if (HomeScreenUserActionEnum.SET_NAME == action) {
 
-
+            mContext.startActivity(new Intent(mContext, SetNameActivity.class));
             success = true;
+
         } else if (HomeScreenUserActionEnum.GOTO_DO_NOTHING == action) {
 
+            DisplayInfoActivity.start(mContext, mFirstModel);
+            success = true;
 
+        } else if (HomeScreenUserActionEnum.SAVE == action) {
+
+            DaoFactory daoFactory = DaoFactory.getDaoFactory(DaoFactory.DaoFactoryType.CONTENT_PROVIDER);
+            FirstModelDAO firstModelDAO = daoFactory.getFirstModelDAO();
+            if (mFirstModel != null) {
+                firstModelDAO.saveFirstModel(mFirstModel);
+            }
             success = true;
         }
 
@@ -151,7 +172,7 @@ public class HomeModel implements Model {
 
 
     public enum HomeScreenUserActionEnum implements UserActionEnum {
-        GO_LEFT(1), GO_RIGHT(2), INCREASE(3), SET_NAME(4), GOTO_DO_NOTHING(5);
+        GO_LEFT(1), GO_RIGHT(2), INCREASE(3), SET_NAME(4), GOTO_DO_NOTHING(5), SAVE(6);
 
         HomeScreenUserActionEnum(int id) {
             this.id = id;
