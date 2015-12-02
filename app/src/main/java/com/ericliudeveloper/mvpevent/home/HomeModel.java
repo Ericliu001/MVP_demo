@@ -27,11 +27,20 @@ public class HomeModel implements Model {
         this.mContext = context;
     }
 
+    /**
+     * @return an array of {@link QueryEnum} that can be processed by the model
+     */
     @Override
     public QueryEnum[] getQueries() {
         return HomeScreenQueryEnum.values();
     }
 
+
+    /**
+     * Updates the data saved in the model from the {@code cursor} and associated {@code query}.
+     *
+     * @return true if the data could be read properly from cursor.
+     */
     @Override
     public boolean readDataFromCursor(Cursor cursor, QueryEnum query) {
         boolean isSuccess = false;
@@ -46,6 +55,19 @@ public class HomeModel implements Model {
         return isSuccess;
     }
 
+
+
+    /**
+     * Creates the cursor loader for the given loader id and data source {@code uri}.
+     * <p/>
+     * The {@code loaderId} corresponds to the id of the query, as defined in {@link QueryEnum}. The
+     * {@code args} may contain extra arguments required to create the query.
+     * <p/>
+     * The returned cursor loader is managed by the {@link android.app.LoaderManager}, as part
+     * of the {@link android.app.Fragment}
+     *
+     * @return the cursor loader.
+     */
     @Override
     public Loader<Cursor> createCursorLoader(int loaderId, Uri uri, Bundle args) {
         CursorLoader loader = null;
@@ -57,22 +79,53 @@ public class HomeModel implements Model {
         return loader;
     }
 
+
+    /**
+     * Updates this Model according to a user {@code action} and {@code args}.
+     * <p/>
+     * Add the constants used to store values in the bundle to the Model implementation class as
+     * final static protected strings.
+     *
+     * @return true if successful.
+     */
     @Override
     public boolean requestModelUpdate(UserActionEnum action, @Nullable Bundle args) {
-        return false;
+        boolean success = false;
+        if (HomeScreenUserActionEnum.GO_LEFT == action) {
+
+        } else if (HomeScreenUserActionEnum.GO_RIGHT == action) {
+
+
+            success = true;
+        } else if (HomeScreenUserActionEnum.INCREASE == action) {
+
+
+            success = true;
+        } else if (HomeScreenUserActionEnum.SET_NAME == action) {
+
+
+            success = true;
+        } else if (HomeScreenUserActionEnum.GOTO_DO_NOTHING == action) {
+
+
+            success = true;
+        }
+
+
+        return success;
     }
 
 
-    private void readDataFromFirstModelCursor(Cursor cursor){
+    private void readDataFromFirstModelCursor(Cursor cursor) {
         mFirstModel = new FirstModel(cursor);
     }
 
     public enum HomeScreenQueryEnum implements QueryEnum {
         FIRST_MODEL(0, new String[]{
                 FirstModelTable.COL_ID
-               , FirstModelTable.COL_DIRECTION
-               , FirstModelTable.COL_PROGRESS
-               , FirstModelTable.COL_NAME
+                , FirstModelTable.COL_DIRECTION
+                , FirstModelTable.COL_PROGRESS
+                , FirstModelTable.COL_NAME
         });
 
 
@@ -80,7 +133,7 @@ public class HomeModel implements Model {
         private String[] projection;
 
 
-        HomeScreenQueryEnum(int id, String[] projection){
+        HomeScreenQueryEnum(int id, String[] projection) {
             this.id = id;
             this.projection = projection;
         }
@@ -98,20 +151,16 @@ public class HomeModel implements Model {
 
 
     public enum HomeScreenUserActionEnum implements UserActionEnum {
-        GO_LEFT(1)
-        , GO_RIGHT(2)
-        , INCREASE(3)
-        , SET_NAME(4)
-        , GOTO_DO_NOTHING(5)
-        ;
+        GO_LEFT(1), GO_RIGHT(2), INCREASE(3), SET_NAME(4), GOTO_DO_NOTHING(5);
 
         HomeScreenUserActionEnum(int id) {
             this.id = id;
         }
 
         private int id;
+
         @Override
-        public int getId(){
+        public int getId() {
             return id;
         }
 
